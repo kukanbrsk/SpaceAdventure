@@ -10,10 +10,12 @@ public class Ship : MonoBehaviour,IDamagetbl
     [SerializeField] private BulletPool bulletPool;
     [SerializeField] private GameObject pos;
     [SerializeField] private TextMeshProUGUI textHp;
-    [SerializeField] Image healthBar;
-    [SerializeField] ParticleSystem[] sparks;
+    [SerializeField] private Image healthBar;
+    [SerializeField] private ParticleSystem[] sparks;
     private int _maxHp = 6;
     private float _hp;
+    private Coroutine courutinEffects;
+    private WaitForSeconds _rateOfFire = new WaitForSeconds(0.5f);
 
     void Start()
     {
@@ -21,6 +23,7 @@ public class Ship : MonoBehaviour,IDamagetbl
         textHp.text = _hp.ToString();
         cam = Camera.main;
       StartCoroutine(Shot());
+
     }
 
     private void OnMouseDrag()
@@ -44,32 +47,47 @@ public class Ship : MonoBehaviour,IDamagetbl
         while (true)
         {
         Shooting();
-        yield return new WaitForSeconds(0.5f);
+        yield return _rateOfFire;
         }
     }
 
     public void ChangeHealth(float change)
     {
         _hp += change;
+        _hp = Mathf.Clamp(_hp, 0, _maxHp);
         healthBar.fillAmount = _hp/_maxHp;
         textHp.text = _hp.ToString();
-        if (_hp<_maxHp/2)
+        if (_hp<_maxHp/2&& courutinEffects == null)
         {
-            StartCoroutine(LowHp());
+            courutinEffects = StartCoroutine(LowHp());
         }
         if (_hp<=0)
         {
             SceneManager.LoadScene(0);
         }
+      
     }
 
-    IEnumerator LowHp()
+    private IEnumerator LowHp()
     {
-        while (true)
+        while (_hp < _maxHp/2)
         {
         yield return new WaitForSeconds(Random.Range(1,4));
         sparks[Random.Range(0, sparks.Length)].Play();
 
         }
+        courutinEffects = null;
+    }
+    public void BonusBullet (float newRate, float bonusTime)
+    {
+        StartCoroutine(BonusShooting(newRate,bonusTime));
+    }
+
+    private IEnumerator BonusShooting(float newRate, float bonusTime)
+    {
+       var currentRate = _rateOfFire;
+        _rateOfFire = new WaitForSeconds(newRate);
+        yield return new WaitForSeconds(bonusTime);
+        _rateOfFire = currentRate;
     }
 }

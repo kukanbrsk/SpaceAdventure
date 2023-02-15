@@ -12,13 +12,17 @@ public class PoolManager : MonoBehaviour
     public float LeftBorder { get; private set; }
     public float RightBorder{get; private set;}
     public float Upper { get; private set; }
-    
+    public float Down { get; private set; }
+
+
 
     private void Awake()
     {
         Upper = Camera.main.transform.position.y + Camera.main.orthographicSize;
         LeftBorder = Camera.main.transform.position.x - Camera.main.aspect * Camera.main.orthographicSize;
         RightBorder = Camera.main.transform.position.x + Camera.main.aspect * Camera.main.orthographicSize;
+        Down = Camera.main.transform.position.y - Camera.main.orthographicSize;
+
 
         Singleton = this;
     }

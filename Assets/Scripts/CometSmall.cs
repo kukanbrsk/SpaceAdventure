@@ -22,14 +22,14 @@ public class CometSmall : SpaceObject
         var rand = UnityEngine.Random.Range(1f, 2f);
         transform.localScale =Vector3.one * rand;
         colComet.radius = transform.localScale.x / factor;
-        HpComet = (int)Mathf.Floor(rand * 2);
+        hpComet = (int)Mathf.Floor(rand * 2);
         rotationSpeed = UnityEngine.Random.Range(-50, 50f);
     }
 
     public override void ChangeHealth(float change)
     {
         base.ChangeHealth(change);
-        if (HpComet == 0)
+        if (hpComet <= 0)
         {
              PoolManager.Singleton.RealiseComet(this);
              PoolManager.Singleton.GetExsplosion().transform.position = transform.position;
@@ -41,7 +41,7 @@ public class CometSmall : SpaceObject
         if (collision.gameObject.TryGetComponent(out IDamagetbl damagetbl))
         {
             damagetbl.ChangeHealth(-1);
-            ChangeHealth(-1);
+            ChangeHealth(- hpComet);
         }
     }
 }

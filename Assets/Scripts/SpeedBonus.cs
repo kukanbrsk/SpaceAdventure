@@ -2,16 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Healer : BonusObject
+public class SpeedBonus : BonusObject
 {
-  
+    void Start()
+    {
+        
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent<IDamagetbl>(out var damagetbl)&& damagetbl is Ship)
+        if (collision.TryGetComponent(out Ship ship))
         {
-            damagetbl.ChangeHealth(3);
+            ship.BonusBullet(0.25f,5);
             StartCoroutine(SpawnHeal());
         }
     }
- 
 }
