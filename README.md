@@ -1,4 +1,4 @@
 # SpaceAdventure
 **Этот проект не закончен**
 
-![](https://github.com/kukanbrsk/SpaceAdventure/blob/main/preview.gif)
+![](https://github.com/kukanbrsk/SpaceAdventure/blob/main/SG.gif)
