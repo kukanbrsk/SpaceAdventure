@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class SpaceObject : MonoBehaviour,IDamagetbl
 {
     [SerializeField] private float speed;
-     protected float hpComet =1;
+     protected float hpComet = 1;
      protected float rotationSpeed;
 
     void Update()

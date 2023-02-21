@@ -9,6 +9,8 @@ public class PoolManager : MonoBehaviour
     [SerializeField] private GameObject comet;
     [SerializeField] private CometPool cometPool;
     [SerializeField] private ExsplosionPool exsplosionPool;
+    [SerializeField] private EnemyPool enemyPool;
+    public bool onScene = false;
     public float LeftBorder { get; private set; }
     public float RightBorder{get; private set;}
     public float Upper { get; private set; }
@@ -18,6 +20,7 @@ public class PoolManager : MonoBehaviour
 
     private void Awake()
     {
+        onScene = false;
         Upper = Camera.main.transform.position.y + Camera.main.orthographicSize;
         LeftBorder = Camera.main.transform.position.x - Camera.main.aspect * Camera.main.orthographicSize;
         RightBorder = Camera.main.transform.position.x + Camera.main.aspect * Camera.main.orthographicSize;
@@ -29,11 +32,15 @@ public class PoolManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(SpawnComet());
+        GetEnemy();
+
     }
 
     public CometSmall GetComet() => cometPool.PoolForComet.Get();
     public void RealiseComet(CometSmall obj) => cometPool.PoolForComet.Release(obj);
     public ParticleSystem GetExsplosion() => exsplosionPool.PoolExsplosion.Get();
+    public Enemy GetEnemy() => enemyPool.enemyPool.Get();
+    public void RealiseEnemy(Enemy obj) => enemyPool.enemyPool.Release(obj);
 
     private void SpawnSpaceObject()
     {
@@ -48,4 +55,6 @@ public class PoolManager : MonoBehaviour
             SpawnSpaceObject();
         }
     }
+
+
 }

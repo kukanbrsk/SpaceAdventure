@@ -9,7 +9,7 @@ public class Ship : MonoBehaviour,IDamagetbl
     [SerializeField] private GameObject bulObj;
     [SerializeField] private BulletPool bulletPool;
     [SerializeField] private GameObject pos;
-    [SerializeField] private TextMeshProUGUI textHp;
+
     [SerializeField] private Image healthBar;
     [SerializeField] private ParticleSystem[] sparks;
     private int _maxHp = 6;
@@ -20,7 +20,6 @@ public class Ship : MonoBehaviour,IDamagetbl
     void Start()
     {
         _hp = _maxHp;
-        textHp.text = _hp.ToString();
         cam = Camera.main;
       StartCoroutine(Shot());
 
@@ -56,7 +55,6 @@ public class Ship : MonoBehaviour,IDamagetbl
         _hp += change;
         _hp = Mathf.Clamp(_hp, 0, _maxHp);
         healthBar.fillAmount = _hp/_maxHp;
-        textHp.text = _hp.ToString();
         if (_hp<_maxHp/2&& courutinEffects == null)
         {
             courutinEffects = StartCoroutine(LowHp());

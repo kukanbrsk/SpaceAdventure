@@ -30,7 +30,7 @@ public class BonusObject : MonoBehaviour
         transform.position = new Vector3(Random.Range(PoolManager.Singleton.LeftBorder, PoolManager.Singleton.RightBorder), PoolManager.Singleton.Upper + 2, 0);
         var lastSpeed = speed;
         speed = 0;
-        yield return new WaitForSeconds(Random.Range(10, 17));
+        yield return new WaitForSeconds(Random.Range(12, 27));
         speed = lastSpeed;
     }
 }
