@@ -21,7 +21,8 @@ public class Enemy : MonoBehaviour,IDamagetbl
 
     private Action _moveState;
     private float _angle = 0;
-    private int _direction = -1;
+    private float _angleSpeed = 0.02f;
+    private int _radiusFactor = -1;
     [SerializeField] private float radiusMove =2 ;
     [SerializeField] private EnemyState enemyState = EnemyState.Vertical;
 
@@ -54,6 +55,9 @@ public class Enemy : MonoBehaviour,IDamagetbl
   
     private void OnEnable()
     {
+        StartCoroutine(PauseMove());
+        StartCoroutine(SwitchState());
+
         transform.position = new Vector3(0, 6, 0);
         _moveState = LinearMove;
         _currentHp = _maxHp;
@@ -91,19 +95,54 @@ public class Enemy : MonoBehaviour,IDamagetbl
         }
     }
 
+    
+    IEnumerator PauseMove()
+    {
+        while (true)
+        {
+        yield return new WaitForSeconds(UnityEngine.Random.Range(6,12));
+            _angleSpeed = 0;
+            speed = 0;
+            yield return new WaitForSeconds(UnityEngine.Random.Range(1, 1.5f));
+            _angleSpeed = 0.02f;
+            speed = 2;
+        }
+    }
+    IEnumerator SwitchState()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(UnityEngine.Random.Range(5, 10));
+
+            if (_moveState == LinearMove)
+            {
+                enemyState = EnemyState.Vertical;
+                radiusMove = Vector3.Distance(transform.position, new Vector3(0, _indent));
+                _angle = - Vector2.SignedAngle(Vector2.up, transform.position - new Vector3(0, _indent))- 90;
+                _moveState = CircleMove;
+            }
+            else
+            {
+                enemyState = EnemyState.Horizontal;
+                _moveState = LinearMove;
+                _targetPosition = leftTargetPosition;
+            }
+        }
+    }
+
     private void CircleMove()
     {
         transform.position = new Vector3(Mathf.Sin(_angle)*2, Mathf.Cos(-_angle)* radiusMove +_indent);
-        radiusMove += 0.0005f * _direction;
+        radiusMove += 0.0005f * _radiusFactor;
         if (radiusMove>= 2)
         {
-            _direction = -1;
+            _radiusFactor = -1;
         }
         else if (radiusMove<=0.5f)
         {
-            _direction = 1;
+            _radiusFactor = 1;
         }
-        _angle+=0.02f;
+        _angle+= _angleSpeed;
     }
 }
 
