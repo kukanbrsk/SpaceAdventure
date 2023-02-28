@@ -17,7 +17,7 @@ public class EnemyPool : MonoBehaviour
 
     private Enemy Create()
     {
-       return Instantiate(enemyPrefab);
+        return Instantiate(enemyPrefab);
     }
 
     private void OnGet(Enemy obj)
@@ -42,5 +42,5 @@ public class EnemyPool : MonoBehaviour
         Destroy(obj);
     }
 
- 
+
 }

@@ -4,18 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class Enemy : MonoBehaviour,IDamagetbl
+public class Enemy : MonoBehaviour, IDamagetbl
 {
     [SerializeField] private Image helthBar;
-    [SerializeField]private float _maxHp;
+    [SerializeField] private float _maxHp;
     private float _currentHp;
 
     [SerializeField] private Transform pos;
     [SerializeField] private float speed = 1f;
     private static EnemyBulletPool enemyPool;
 
-    private Vector3 leftTargetPosition;
-    private Vector3 rightTargetPosition;
+    private Vector3 _leftTargetPosition;
+    private Vector3 _rightTargetPosition;
     private Vector3 _targetPosition;
     private float _indent = 3;
 
@@ -23,14 +23,14 @@ public class Enemy : MonoBehaviour,IDamagetbl
     private float _angle = 0;
     private float _angleSpeed = 0.02f;
     private int _radiusFactor = -1;
-    [SerializeField] private float radiusMove =2 ;
+    [SerializeField] private float radiusMove = 2;
     [SerializeField] private EnemyState enemyState = EnemyState.Vertical;
 
 
     private void Start()
     {
-        leftTargetPosition = new Vector3(PoolManager.Singleton.LeftBorder, _indent);
-        rightTargetPosition = new Vector3(PoolManager.Singleton.RightBorder, _indent);
+        _leftTargetPosition = new Vector3(PoolManager.Singleton.LeftBorder, _indent);
+        _rightTargetPosition = new Vector3(PoolManager.Singleton.RightBorder, _indent);
         _targetPosition = new Vector3(0, _indent + radiusMove);
 
     }
@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour,IDamagetbl
     public void ChangeHealth(float change)
     {
         _currentHp += change;
-        if (_currentHp<=0)
+        if (_currentHp <= 0)
         {
             PoolManager.Singleton.RealiseEnemy(this);
             PoolManager.Singleton.GetExsplosion().transform.position = transform.position;
@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour,IDamagetbl
         helthBar.fillAmount = _currentHp / _maxHp;
     }
 
-  
+
     private void OnEnable()
     {
         StartCoroutine(PauseMove());
@@ -69,11 +69,11 @@ public class Enemy : MonoBehaviour,IDamagetbl
         StartCoroutine(SpawnBullet());
 
     }
-        IEnumerator SpawnBullet()
+    IEnumerator SpawnBullet()
     {
         while (true)
         {
-        yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f);
             enemyPool.Pool.Get().transform.position = pos.position;
         }
     }
@@ -85,7 +85,7 @@ public class Enemy : MonoBehaviour,IDamagetbl
         switch (enemyState)
         {
             case EnemyState.Horizontal:
-                _targetPosition = _targetPosition == leftTargetPosition ? rightTargetPosition : leftTargetPosition;
+                _targetPosition = _targetPosition == _leftTargetPosition ? _rightTargetPosition : _leftTargetPosition;
                 break;
             case EnemyState.Vertical:
                 // enemyState = EnemyState.Horizontal;
@@ -95,12 +95,12 @@ public class Enemy : MonoBehaviour,IDamagetbl
         }
     }
 
-    
+
     IEnumerator PauseMove()
     {
         while (true)
         {
-        yield return new WaitForSeconds(UnityEngine.Random.Range(6,12));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(6, 12));
             _angleSpeed = 0;
             speed = 0;
             yield return new WaitForSeconds(UnityEngine.Random.Range(1, 1.5f));
@@ -118,31 +118,31 @@ public class Enemy : MonoBehaviour,IDamagetbl
             {
                 enemyState = EnemyState.Vertical;
                 radiusMove = Vector3.Distance(transform.position, new Vector3(0, _indent));
-                _angle = - Vector2.SignedAngle(Vector2.up, transform.position - new Vector3(0, _indent))- 90;
+                _angle = -Vector2.SignedAngle(Vector2.up, transform.position - new Vector3(0, _indent)) - 90;
                 _moveState = CircleMove;
             }
             else
             {
                 enemyState = EnemyState.Horizontal;
                 _moveState = LinearMove;
-                _targetPosition = leftTargetPosition;
+                _targetPosition = _leftTargetPosition;
             }
         }
     }
 
     private void CircleMove()
     {
-        transform.position = new Vector3(Mathf.Sin(_angle)*2, Mathf.Cos(-_angle)* radiusMove +_indent);
+        transform.position = new Vector3(Mathf.Sin(_angle) * 2, Mathf.Cos(-_angle) * radiusMove + _indent);
         radiusMove += 0.0005f * _radiusFactor;
-        if (radiusMove>= 2)
+        if (radiusMove >= 2)
         {
             _radiusFactor = -1;
         }
-        else if (radiusMove<=0.5f)
+        else if (radiusMove <= 0.5f)
         {
             _radiusFactor = 1;
         }
-        _angle+= _angleSpeed;
+        _angle += _angleSpeed;
     }
 }
 
@@ -152,6 +152,6 @@ public enum EnemyState
     Horizontal,
     Vertical,
     Circle
-       
+
 
 }
